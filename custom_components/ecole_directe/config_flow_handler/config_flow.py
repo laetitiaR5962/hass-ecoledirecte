@@ -13,8 +13,10 @@ https://developers.home-assistant.io/docs/config_entries_config_flow_handler
 from __future__ import annotations
 
 import json
+import json
 from typing import Any
 
+import anyio
 import anyio
 from homeassistant import config_entries
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
@@ -83,6 +85,7 @@ class EDConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             try:
                 path = self.hass.config.config_dir + "/" + user_input["qcm_filename"]
+                LOGGER.error("2. CHEMIN ABSOLU DU FICHIER QCM : %s", path)
                 if not await anyio.Path(path).is_file():
                     async with await anyio.open_file(path, "w", encoding="utf-8") as f:
                         await f.write(json.dumps({}, indent=4, ensure_ascii=False))
@@ -92,9 +95,18 @@ class EDConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     username=user_input[CONF_USERNAME],
                     password=user_input[CONF_PASSWORD],
                     qcm_path=path,
+                    qcm_path=path,
                 )
 
+                await self.async_set_unique_id(slugify(user_input[CONF_USERNAME]))
+                self._abort_if_unique_id_configured()
+
+                return self.async_create_entry(
+                    title=user_input[CONF_USERNAME],
+                    data=user_input,
+                )
             except Exception as exception:
+                LOGGER.exception("CRASH DU CONFIG FLOW :")
                 errors["base"] = self._map_exception_to_error(exception)
             else:
                 # Set unique ID based on username
@@ -211,10 +223,12 @@ class EDConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             try:
                 path = self.hass.config.config_dir + "/" + user_input["qcm_filename"]
+                LOGGER.error("1. CHEMIN ABSOLU DU FICHIER QCM : %s", path)
                 await validate_credentials(
                     self.hass,
                     username=user_input[CONF_USERNAME],
                     password=user_input[CONF_PASSWORD],
+                    qcm_path=path,
                     qcm_path=path,
                 )
             except Exception as exception:
@@ -235,20 +249,9 @@ class EDConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     def _map_exception_to_error(self, exception: Exception) -> str:
-        """
-        Map API exceptions to user-facing error keys.
-
-        Args:
-            exception: The exception that was raised.
-
-        Returns:
-            The error key for display in the config flow form.
-
-        """
-        LOGGER.warning("Error in config flow: %s", exception)
+        LOGGER.warning("Error in config flow detail:")
         exception_name = type(exception).__name__
         return ERROR_MAP.get(exception_name, "unknown")
-
 
 class InvalidAuthError(HomeAssistantError):
     """Error to indicate there is invalid auth."""

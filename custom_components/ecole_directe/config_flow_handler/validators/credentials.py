@@ -15,6 +15,8 @@ from typing import TYPE_CHECKING
 
 from ecoledirecte_api.client import QCMException
 
+from custom_components.ecole_directe.const import LOGGER
+
 from custom_components.ecole_directe.api.client import (
     EDApiClient,
 )
@@ -49,8 +51,9 @@ async def validate_credentials(
             qcm_path=qcm_path,
         ) as client:
             await client.login()
-    except QCMException:
-        return
+    except Exception as err:
+        LOGGER.error("Réponse exacte de l'API École Directe : %s", getattr(err, "message", err))
+        raise
 
 
 __all__ = [

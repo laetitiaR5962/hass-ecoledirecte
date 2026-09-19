@@ -166,6 +166,9 @@ class EDApiClient:
             password=self.password,
             qcm_json=self.qcm,
         )
+        async def force_save_qcm(qcm_data):
+            LOGGER.error("--- QCM BRUT REÇU DE L'API --- : %s", qcm_data)
+            await self.save_question(qcm_data)
         self.ed_client.on_new_question(self.save_question)
         login = await self.ed_client.login()
         LOGGER.debug(login)
@@ -349,6 +352,7 @@ class EDApiClient:
             "description": contenu,
             "effectue": data["aFaire"].get("effectue", False),
             "interrogation": data.get("interrogation", False),
+            "documents": data["aFaire"].get("documents", []),
         }
 
     async def post_homework(
