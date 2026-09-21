@@ -104,7 +104,6 @@ class EDLessonsSensor(EDGenericSensor):
                     if lesson["is_annule"]
                 }
                 for lesson in lessons:
-                    
                     """ index = lessons.index(lesson)
 
                     if not (
