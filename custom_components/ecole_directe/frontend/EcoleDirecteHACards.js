@@ -32,7 +32,7 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       </td>
     </tr>`}getTimetableRow(t){let i=new Date().getTime(),a=Date.parse(t.start_at),s=Date.parse(t.end_at),n=g``;this.config.display_lunch_break&&t.is_afternoon&&!this.lunchBreakRendered&&(n=this.getBreakRow("Repas",this.config.dim_ended_lessons&&a<i),this.lunchBreakRendered=!0);let o=g`
       <tr
-        class="${t.is_annule?"lesson-canceled":""} ${this.config.dim_ended_lessons&&s<i?"lesson-ended":""}"
+        class="${t.is_annule ? "lesson-canceled" : t.is_modifie ? "lesson-modified" : ""} ${this.config.dim_ended_lessons && s < i ? "lesson-ended" : ""}"
       >
         <td>
           ${t.start_time}<br />
@@ -42,9 +42,13 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
           <span style="background-color:${t.background_color}"></span>
         </td>
         <td>
-          <span class="lesson-name">${t.lesson}</span>
+          <span class="lesson-name">
+            ${t.lesson}
+            ${t.remplace?g`<span class="lesson-replaced">(remplace ${t.remplace})</span>`:""}
+            ${t.is_modifie?g`<span class="lesson-modified-dot"></span>`:""}
+          </span>
           ${this.config.display_classroom?g`<span class="lesson-classroom">
-                ${t.salle?"Salle "+t.salle:""}
+                ${t.salle?t.salle:""}
                 ${t.salle&&this.config.display_teacher?", ":""}
               </span>`:""}
           ${this.config.display_teacher?g`<span class="lesson-teacher"> ${t.prof} </span>`:""}
@@ -75,7 +79,7 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
         Veuillez configurer la carte
       </div>`;let t=this.hass.states[this.config.entity];if(t){let i=t.attributes["Emploi du temps"];if(i){this.lunchBreakRendered=!1;let a=[],s=[],n=0,o=null,l=null,c=new Date,h=0;for(let d=0;d<i.length;d++){let p=i[d],y=this.getFormattedDate(p),w=new Date(p.end_at);if(p.isAnnule||(o===null&&(o=p.start_at),l=p.end_at),p.isAnnule&&d<i.length-1){let P=i[d+1];if(p.start_at===P.start_at&&!P.isAnnule)continue}if(s.push(this.getTimetableRow(p)),d+1>=i.length||d+1<i.length&&y!==this.getFormattedDate(i[d+1]))this.config.enable_slider&&this.config.switch_to_next_day&&Ve(w,c)&&w<c&&(h=n+1),a.push(g`
               <div
-                class="${t.is_annule ? "lesson-canceled" : t.is_modifie ? "lesson-modified" : ""} ${this.config.dim_ended_lessons && s < i ? "lesson-ended" : ""}"
+                class="${this.config.enable_slider?"slider-enabled":""} ed-timetable-day-wrapper ${n===h?"active":""}"
               >
                 ${this.getDayHeader(p,o,l,n)}
                 <table>
@@ -164,6 +168,23 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       }
       .lesson-canceled span.lesson-status {
         background-color: rgb(250, 50, 75);
+      }
+      .lesson-modified span.lesson-name {
+        font-style: italic;
+      }
+      .lesson-modified-dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: orange;
+        margin-left: 6px;
+        vertical-align: middle;
+      }
+      .lesson-replaced {
+        font-size: 0.85em;
+        font-style: italic;
+        opacity: 0.7;
       }
       .lesson-ended {
         opacity: 0.3;
@@ -350,7 +371,7 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
         flex-shrink: 0;
         --mdc-icon-size: 16px;
       }
-    `}static getStubConfig(){return{display_header:!0,reduce_done_devoir:!0,display_done_devoir:!0,enable_slider:!1}}static getConfigElement(){return document.createElement("ecole_directe-devoirs-card-editor")}};customElements.define("ecole_directe-devoirs-card",ee);window.customCards=window.customCards||[];window.customCards.push({type:"ecole_directe-devoirs-card",name:"Carte des devoirs pour Ecole Directe",description:"Affiche les devoirs pour Ecole Directe",documentationURL:"https://github.com/hacf-fr/EcoleDirecteHACards?tab=readme-ov-file#devoirs"});var Re=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),b=Re.prototype.html,Ze=Re.prototype.css,te=class extends _{initCard(){this.items_attribute_key="notes",this.header_title="Notes de ",this.no_data_message="Aucune note disponible"}getFormattedDate(e){return new Date(e).toLocaleDateString("fr-FR",{weekday:"short",day:"2-digit",month:"2-digit"}).replace(/^(.)/,t=>t.toUpperCase())}getGradeRow(e){let t=parseFloat(e.note.replace(",",".")),i=[];if(this.config.compare_with_ratio!==null){let s=parseFloat(this.config.compare_with_ratio),n=t/parseFloat(e.sur.replace(",","."));i.push(n>=s?"above-ratio":"below-ratio")}else if(this.config.compare_with_class_average&&e.moyenne_classe){let s=parseFloat(e.moyenne_classe.replace(",","."));i.push(t>s?"above-average":"below-average")}let a=e.note_sur;if(this.config.grade_format==="short"&&(a=e.note),this.config.display_new_grade_notice){let s=new Date(e.date),n=new Date;s.getFullYear()===n.getFullYear()&&s.getMonth()===n.getMonth()&&s.getDate()===n.getDate()&&i.push("new-grade")}return b`
+    `}static getStubConfig(){return{display_header:!0,reduce_done_devoir:!0,display_done_devoir:!0,enable_slider:!1}}static getConfigElement(){return document.createElement("ecole_directe-devoirs-card-editor")}};customElements.define("ecole_directe-devoirs-card",ee);window.customCards=window.customCards||[];window.customCards.push({type:"ecole_directe-devoirs-card",name:"Carte des devoirs pour Ecole Directe",description:"Affiche les devoirs pour Ecole Directe",documentationURL:"https://github.com/hacf-fr/EcoleDirecteHACards?tab=readme-ov-file#devoirs"});var Re=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),b=Re.prototype.html,Ze=Re.prototype.css,te=class extends _{initCard(){this.items_attribute_key="notes",this.header_title="Notes de ",this.no_data_message="Aucune note disponible"}getFormattedDate(e){return new Date(e).toLocaleDateString("fr-FR",{weekday:"short",day:"2-digit",month:"2-digit"}).replace(/^(.)/,t=>t.toUpperCase())}getGradeRow(e){let t=parseFloat(e.note.replace(",",".")),i=[];if(this.config.compare_with_ratio!==null){let s=parseFloat(this.config.compare_with_ratio),n=t/parseFloat(e.sur.replace(",","."));i.push(n>s?"above-ratio":t<a?"below-ratio":"above-ratio")}else if(this.config.compare_with_class_average&&e.moyenne_classe){let s=parseFloat(e.moyenne_classe.replace(",","."));i.push(t>=s?"above-average":"below-average")}let a=e.note_sur;if(this.config.grade_format==="short"&&(a=e.note),this.config.display_new_grade_notice){let s=new Date(e.date),n=new Date;s.getFullYear()===n.getFullYear()&&s.getMonth()===n.getMonth()&&s.getDate()===n.getDate()&&i.push("new-grade")}return b`
       <tr class="${i.join(" ")}">
         <td class="grade-color"><span></span></td>
         <td class="grade-description">
@@ -364,7 +385,7 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
               >`:""}
         </td>
         <td class="grade-detail">
-          <span class="grade-value">${a}</span>
+          ${e.non_significatif ? b`<span class="grade-value non-significatif">${a}</span>` : b`<span class="grade-value">${a}</span>`}
           ${this.config.display_class_average&&e.moyenne_classe?b`<span class="grade-class-average"
                 >Moy. ${e.moyenne_classe}</span
               >`:""}
@@ -440,6 +461,7 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       }
       .grade-detail {
         text-align: right;
+        width: 40%
       }
       .grade-value {
         font-weight: bold;
@@ -447,6 +469,9 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       .grade-value,
       .grade-class-average {
         display: block;
+      }
+      .non-significatif {
+        font-style: italic;
       }
       .grade-class-average,
       .grade-class-min,
@@ -469,7 +494,7 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
           >
         </td>
       </tr>
-    `}getAverageRow(e){let t=parseFloat(e.moyenne.replace(",",".")),i=[];if(this.config.compare_with_ratio!==null){let a=parseFloat(this.config.compare_with_ratio);i.push(t>=a?"above-ratio":"below-ratio")}else if(this.config.compare_with_class_average&&e.moyenneClasse){let a=parseFloat(e.moyenneClasse.replace(",","."));i.push(t>a?"above-average":"below-average")}return $`
+    `}getAverageRow(e){let t=parseFloat(e.moyenne.replace(",",".")),i=[];if(this.config.compare_with_ratio!==null){let a=parseFloat(this.config.compare_with_ratio);i.push(t>=a?"above-ratio":"below-ratio")}else if(this.config.compare_with_class_average&&e.moyenneClasse){let a=parseFloat(e.moyenneClasse.replace(",","."));i.push(t>a?"above-average":t<a?"below-average":"above-average")}return $`
       <tr class="${i.join(" ")}">
         <td class="average-color">
           <span style="background-color:Grey"></span>
@@ -596,9 +621,20 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       .average-class-min + .average-class-max:before {
         content: " - ";
       }
-    `}static getStubConfig(){return{display_header:!0,display_class_average:!0,compare_with_class_average:!0,compare_with_ratio:null,display_class_min:!0,display_class_max:!0}}static getConfigElement(){return document.createElement("ecole_directe-moyennes-card-editor")}};customElements.define("ecole_directe-moyennes-card",ie);window.customCards=window.customCards||[];window.customCards.push({type:"ecole_directe-moyennes-card",name:"Carte des moyennes pour Ecole Directe",description:"Affiche les moyennes pour Ecole Directe",documentationURL:"https://github.com/hacf-fr/EcoleDirecteHACards?tab=readme-ov-file#moyennes"});var Te=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),S=Te.prototype.html,Ke=Te.prototype.css,ae=class extends _{initCard(){this.items_attribute_key="Evaluations",this.header_title="Evaluations de ",this.no_data_message="Pas d'\xE9valuation \xE0 afficher"}getFormattedDate(e){return new Date(e).toLocaleDateString("fr-FR",{weekday:"short",day:"2-digit",month:"2-digit"}).replace(/^(.)/,t=>t.toUpperCase())}getAcquisitionRow(e){return S`<tr class="acquisition-row">
-      <td>${e.competence}</td>
-      <td>${this.getAcquisitionIcon(e)}</td>
+    `}static getStubConfig(){return{display_header:!0,display_class_average:!0,compare_with_class_average:!0,compare_with_ratio:null,display_class_min:!0,display_class_max:!0}}static getConfigElement(){return document.createElement("ecole_directe-moyennes-card-editor")}};customElements.define("ecole_directe-moyennes-card",ie);window.customCards=window.customCards||[];window.customCards.push({type:"ecole_directe-moyennes-card",name:"Carte des moyennes pour Ecole Directe",description:"Affiche les moyennes pour Ecole Directe",documentationURL:"https://github.com/hacf-fr/EcoleDirecteHACards?tab=readme-ov-file#moyennes"});var Te=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),S=Te.prototype.html,Ke=Te.prototype.css,ae=class extends _{initCard(){this.items_attribute_key="Evaluations",this.header_title="Evaluations de ",this.no_data_message="Pas d'\xE9valuation \xE0 afficher"}getFormattedDate(e){return new Date(e).toLocaleDateString("fr-FR",{weekday:"short",day:"2-digit",month:"2-digit"}).replace(/^(.)/,t=>t.toUpperCase())}getAcquisitionRow(e,t){return S`
+      <tr class="acquisition-row acquisition-row-${t}">
+        <td></td>
+        <td colspan="2">
+          <div class="acquisition-item">
+            <span class="acquisition-description">
+              <span class="acquisition-label">${e.competence}</span>
+              ${e.descriptif ? S`
+                <span class="acquisition-detail">${e.descriptif}</span>
+              ` : ""}
+            </span>
+            ${this.getAcquisitionIcon(e)}
+          </div>
+        </td>
     </tr>`}getAcquisitionIcon(e){let t=this.config.mapping_evaluations[e.valeur]||e.valeur,i="";return t==="A+"?i="+":t==="Abs"&&(i="a"),S`
       <span
         title="${e.descriptif}"
@@ -606,7 +642,10 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       >
         ${i}
       </span>
-    `}getEvaluationRow(e,t){let i=e.elements_programme,a=[],s=[],n="grey";for(let o=0;o<i.length;o++)a.push(this.getAcquisitionIcon(i[o])),s.push(this.getAcquisitionRow(i[o]));return S`
+    `}
+    toggleEvaluation(e){let t=e.currentTarget,i=t.closest(".evaluation-group");i&&i.classList.toggle("open",t.checked)}
+    getEvaluationRow(e,t){let i=e.elements_programme,a=[],s=[],n="grey";for(let o=0;o<i.length;o++)a.push(this.getAcquisitionIcon(i[o])),s.push(this.getAcquisitionRow(i[o],t));return S`
+      <tbody class="evaluation-group">
       <tr class="evaluation-row">
         <td class="evaluation-color">
           <span style="background-color:${n}"></span>
@@ -615,7 +654,7 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
           <label for="evaluation-full-detail-${t}">
             <span class="evaluation-subject">${e.matiere}</span>
           </label>
-          <input type="checkbox" id="evaluation-full-detail-${t}" />
+          <input type="checkbox" id="evaluation-full-detail-${t}" @change="${this.toggleEvaluation}" />
           ${this.config.display_comment?S`<span class="evaluation-comment">${e.devoir}</span>`:""}
           ${this.config.display_date?S`<span class="evaluation-date"
                 >${this.getFormattedDate(e.date)}</span
@@ -623,7 +662,8 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
         </td>
         <td class="evaluation-detail">${a}</td>
       </tr>
-      ${s}
+       ${s}
+      </tbody>
     `}getCardContent(){if(this.hass.states[this.config.entity]){let t=this.getItems(),i=this.config.max_evaluations??t.length,a=[],s=[];for(let n=0;n<i&&!(n>=t.length);n++){let o=t[n];a.push(this.getEvaluationRow(o,n))}return a.length>0?s.push(S`<table>
             ${a}
           </table>`):s.push(this.noDataMessage()),s}return[]}getDefaultConfig(){return{display_header:!0,display_description:!0,display_teacher:!0,display_date:!0,display_comment:!0,max_evaluations:null,mapping_evaluations:{}}}static get styles(){return Ke`
@@ -642,12 +682,12 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       }
       td.evaluation-color {
         width: 4px;
-        padding-top: 11px;
+        padding-top: 8px;
       }
       td.evaluation-color > span {
         display: inline-block;
         width: 4px;
-        height: 2rem;
+        height: 4rem;
         border-radius: 4px;
         background-color: grey;
       }
@@ -665,6 +705,7 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       }
       .evaluation-description {
         display: block;
+        padding-left: 0px;
       }
       .evaluation-teacher {
         display: block;
@@ -717,16 +758,58 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       input[type="checkbox"] {
         display: none;
       }
-      /** FIXME
-        .evaluation-row:has(input:checked) .acquisition-icon {
-            display:none;
+
+        .evaluation-description label {
+          cursor:pointer;
         }
-        .evaluation-row:has(input:checked) + .acquisition-row {
-            display: table-row;
+
+        .acquisition-row { 
+          display:none;
         }
-        */
+
+        .evaluation-group.open .acquisition-row {
+          display:table-row;
+        }
+
+        input[type="checkbox"] {
+          display:none;
+        }
+
+        .acquisition-row td {
+          padding: 0px 10px 5px 0px;
+        }
+
+        .acquisition-item {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          padding: 3px 0;
+        }
+
+        .acquisition-description {
+          min-width: 0;
+          padding-right: 10px;
+        }
+
+        .acquisition-label {
+          display: block;
+          font-weight: 500;
+        }
+
+        .acquisition-detail {
+          display: block;
+          font-size: 0.85em;
+          color: gray;
+          margin-top: 2px;
+        }
+
+        .acquisition-item .acquisition-icon {
+          flex-shrink: 0;
+          margin-left: 8px;
+        }
+
       .acquisition-row td:nth-child(2) {
-        text-align: right;
+        text-align: left;
       }
     `}static getStubConfig(){return{display_header:!0,display_description:!0,display_teacher:!0,display_date:!0,display_comment:!0,max_evaluations:null,mapping_evaluations:{}}}static getConfigElement(){return document.createElement("ecole_directe-evaluations-card-editor")}};customElements.define("ecole_directe-evaluations-card",ae);window.customCards=window.customCards||[];window.customCards.push({type:"ecole_directe-evaluations-card",name:"Carte des \xE9valuations pour Ecole Directe",description:"Affiche les \xE9valuations pour Ecole Directe",documentationURL:"https://github.com/hacf-fr/EcoleDirecteHACards?tab=readme-ov-file#evaluations"});var He=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),M=He.prototype.html,Qe=He.prototype.css,se=class extends _{getAbsencesRetardsRow(e){let t=M`
       <tr>
