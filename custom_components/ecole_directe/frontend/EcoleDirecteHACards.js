@@ -75,7 +75,7 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
         Veuillez configurer la carte
       </div>`;let t=this.hass.states[this.config.entity];if(t){let i=t.attributes["Emploi du temps"];if(i){this.lunchBreakRendered=!1;let a=[],s=[],n=0,o=null,l=null,c=new Date,h=0;for(let d=0;d<i.length;d++){let p=i[d],y=this.getFormattedDate(p),w=new Date(p.end_at);if(p.isAnnule||(o===null&&(o=p.start_at),l=p.end_at),p.isAnnule&&d<i.length-1){let P=i[d+1];if(p.start_at===P.start_at&&!P.isAnnule)continue}if(s.push(this.getTimetableRow(p)),d+1>=i.length||d+1<i.length&&y!==this.getFormattedDate(i[d+1]))this.config.enable_slider&&this.config.switch_to_next_day&&Ve(w,c)&&w<c&&(h=n+1),a.push(g`
               <div
-                class="${this.config.enable_slider?"slider-enabled":""} ed-timetable-day-wrapper ${n===h?"active":""}"
+                class="${t.is_annule ? "lesson-canceled" : t.is_modifie ? "lesson-modified" : ""} ${this.config.dim_ended_lessons && s < i ? "lesson-ended" : ""}"
               >
                 ${this.getDayHeader(p,o,l,n)}
                 <table>
