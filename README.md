@@ -7,7 +7,7 @@
 [![hacs][hacsbadge]][hacs]
 ![Project Maintenance][maintenance-shield]
 
-[![BuyMeCoffee][buymecoffeebadge]](https://www.buymeacoffee.com/giga77)
+## MODIFIÉ PAR LARUFF5862
 
 - [Installation](#Installation)
   - [Installation via l'interface utilisateur via HACS](#installation-via-linterface-utilisateur-via-hacs)
