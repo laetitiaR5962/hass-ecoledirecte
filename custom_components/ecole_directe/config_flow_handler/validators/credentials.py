@@ -49,9 +49,8 @@ async def validate_credentials(
             hass=hass,
         ) as client:
             await client.login()
-    except Exception as err:
-        LOGGER.error("Réponse exacte de l'API École Directe : %s", getattr(err, "message", err))
-        raise
+    except QCMException:
+        return
 
 
 __all__ = [
