@@ -643,7 +643,6 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
         >
           ${i}
         </span>
-        <span class="acquisition-level">${e.level}</span>
       </div>
     `}
     toggleEvaluation(e){let t=e.currentTarget,i=t.closest(".evaluation-group");i&&i.classList.toggle("open",t.checked)}
@@ -667,7 +666,27 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       </tr>
        ${s}
       </tbody>
-    `}getCardContent(){if(this.hass.states[this.config.entity]){let t=this.getItems(),i=this.config.max_evaluations??t.length,a=[],s=[];for(let n=0;n<i&&!(n>=t.length);n++){let o=t[n];a.push(this.getEvaluationRow(o,n))}return a.length>0?s.push(S`<table>
+    `}
+    
+    getLegendHeader() {
+      const stateObj = this.hass.states[this.config.entity];
+      
+      const levels = stateObj?.attributes?.level_mapping;
+      if (!levels) {
+        return S``;
+      }
+
+      return S`
+        <div class="evaluation-legend">
+          <span class="legend-item"><span class="acquisition-icon acquisition-icon-4"></span> ${levels["4"]}</span>
+          <span class="legend-item"><span class="acquisition-icon acquisition-icon-3"></span> ${levels["3"]}</span>
+          <span class="legend-item"><span class="acquisition-icon acquisition-icon-2"></span> ${levels["2"]}</span>
+          <span class="legend-item"><span class="acquisition-icon acquisition-icon-1"></span> ${levels["1"]}</span>
+        </div>
+      `;
+    }
+
+    getCardContent(){if(this.hass.states[this.config.entity]){let t=this.getItems(),i=this.config.max_evaluations??t.length,a=[],s=[];s.push(this.getLegendHeader());for(let n=0;n<i&&!(n>=t.length);n++){let o=t[n];a.push(this.getEvaluationRow(o,n))}return a.length>0?s.push(S`<table>
             ${a}
           </table>`):s.push(this.noDataMessage()),s}return[]}getDefaultConfig(){return{display_header:!0,display_description:!0,display_teacher:!0,display_date:!0,display_comment:!0,max_evaluations:null,mapping_evaluations:{}}}static get styles(){return Ke`
       ${super.styles}
@@ -730,6 +749,29 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       .evaluation-value {
         font-weight: bold;
       }
+      .evaluation-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 6px;
+        align-items: center;
+        padding: 8px 12px;
+        margin-bottom: 8px;
+        border-bottom: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
+        font-size: 0.85em;
+        font-weight: normal;
+        color: var(--secondary-text-color, gray);
+      }
+      .evaluation-legend div, .legend-item {
+        padding: 0;
+        font-weight: normal;
+        font-size: inherit;
+      }
+      .legend-item {
+        padding-right: 5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px; /* espace propre entre la bulle et le texte */
+      }
       .acquisition-status {
         display: inline-flex;
         align-items: center;
@@ -761,27 +803,6 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       }
       .acquisition-icon-1 {
         background-color: #f80a0a;
-      }
-      /* Masquer le texte du niveau sur ordinateur */
-      .acquisition-level {
-        display: none;
-      }
-      /* --- RÈGLES MOBILE / ÉCRAN TACTILE --- */
-      /* Option A : Sur écran étroit (moins de 600px), on affiche le texte à côté du rond */
-      /* @media (max-width: 600px) {
-        .acquisition-level {
-          display: inline;
-          font-size: 0.85em;
-          font-weight: 500;
-        }
-      } */
-      /* Option B (Alternative) : Détecter directement les appareils tactiles (smartphones/tablettes) */
-      @media (hover: none) {
-        .acquisition-level {
-          display: inline;
-          font-size: 0.85em;
-          font-weight: 500;
-        }
       }
       .acquisition-row {
         display: none;

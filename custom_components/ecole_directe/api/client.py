@@ -814,19 +814,18 @@ def get_disciplines_periode(data: Any) -> list:
         raise
     return disciplines
 
+LEVEL_MAPPING: dict[str, str] = {
+    "1": "Non atteint",
+    "2": "Partiellement atteint",
+    "3": "Atteint",
+    "4": "Dépassé",
+}
+
 def get_level(valeur: str | None) -> str:
     """Retourne le niveau sous forme de texte selon la valeur."""
-    match valeur:
-        case "1":
-            return "Non atteint"
-        case "2":
-            return "Partiellement atteint"
-        case "3":
-            return "Atteint"
-        case "4":
-            return "Dépassé"
-        case _:
-            return "Inconnu"
+    if valeur is None:
+        return "Inconnu"
+    return LEVEL_MAPPING.get(str(valeur), "Inconnu")
 
 def get_evaluation(data: Any, fallback_matiere: str | None = None) -> dict:
     """Get evaluation information."""
@@ -899,7 +898,7 @@ def get_lesson(data: Any, lunch_break_time: time) -> dict:
         "end_time": end_date.strftime("%H:%M"),
         "lesson": data["text"],
         "salle": data["salle"],
-        "groupe_id": data["groupeId"],  
+        "groupe_id": data["groupeId"],
         "is_annule": data["isAnnule"],
         "is_modifie": data["isModifie"],
         "background_color": data["color"],

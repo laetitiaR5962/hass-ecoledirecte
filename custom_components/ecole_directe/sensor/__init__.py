@@ -40,6 +40,7 @@ from .sanctions import ENTITY_DESCRIPTIONS as SANCTIONS_DESCRIPTIONS
 from .sanctions import EDSanctionsSensor
 from .wallet import ENTITY_DESCRIPTIONS as WALLETS_DESCRIPTIONS
 from .wallet import EDWalletSensor
+from ..api.client import LEVEL_MAPPING
 
 if TYPE_CHECKING:
     from homeassistant.components.sensor import SensorEntityDescription
