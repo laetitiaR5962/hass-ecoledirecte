@@ -636,12 +636,15 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
           </div>
         </td>
     </tr>`}getAcquisitionIcon(e){let t=this.config.mapping_evaluations[e.valeur]||e.valeur,i="";return t==="A+"?i="+":t==="Abs"&&(i="a"),S`
-      <span
-        title="${e.descriptif}"
-        class="acquisition-icon acquisition-icon-${t}"
-      >
-        ${i}
-      </span>
+      <div class="acquisition-status">
+        <span
+          title="${e.level}"
+          class="acquisition-icon acquisition-icon-${t}"
+        >
+          ${i}
+        </span>
+        <span class="acquisition-level">${e.level}</span>
+      </div>
     `}
     toggleEvaluation(e){let t=e.currentTarget,i=t.closest(".evaluation-group");i&&i.classList.toggle("open",t.checked)}
     getEvaluationRow(e,t){let i=e.elements_programme,a=[],s=[],n="grey";for(let o=0;o<i.length;o++)a.push(this.getAcquisitionIcon(i[o])),s.push(this.getAcquisitionRow(i[o],t));return S`
@@ -727,6 +730,13 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       .evaluation-value {
         font-weight: bold;
       }
+      .acquisition-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 0px 0px 0px;
+        white-space: nowrap;
+      }
       .acquisition-icon {
         display: inline-block;
         width: 14px;
@@ -752,62 +762,75 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       .acquisition-icon-1 {
         background-color: #f80a0a;
       }
+      /* Masquer le texte du niveau sur ordinateur */
+      .acquisition-level {
+        display: none;
+      }
+      /* --- RÈGLES MOBILE / ÉCRAN TACTILE --- */
+      /* Option A : Sur écran étroit (moins de 600px), on affiche le texte à côté du rond */
+      /* @media (max-width: 600px) {
+        .acquisition-level {
+          display: inline;
+          font-size: 0.85em;
+          font-weight: 500;
+        }
+      } */
+      /* Option B (Alternative) : Détecter directement les appareils tactiles (smartphones/tablettes) */
+      @media (hover: none) {
+        .acquisition-level {
+          display: inline;
+          font-size: 0.85em;
+          font-weight: 500;
+        }
+      }
       .acquisition-row {
         display: none;
       }
       input[type="checkbox"] {
         display: none;
       }
-
-        .evaluation-description label {
-          cursor:pointer;
-        }
-
-        .acquisition-row { 
-          display:none;
-        }
-
-        .evaluation-group.open .acquisition-row {
-          display:table-row;
-        }
-
-        input[type="checkbox"] {
-          display:none;
-        }
-
-        .acquisition-row td {
-          padding: 0px 10px 5px 0px;
-        }
-
-        .acquisition-item {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          padding: 3px 0;
-        }
-
-        .acquisition-description {
-          min-width: 0;
-          padding-right: 10px;
-        }
-
-        .acquisition-label {
-          display: block;
-          font-weight: 500;
-        }
-
-        .acquisition-detail {
-          display: block;
-          font-size: 0.85em;
-          color: gray;
-          margin-top: 2px;
-        }
-
-        .acquisition-item .acquisition-icon {
-          flex-shrink: 0;
-          margin-left: 8px;
-        }
-
+      .evaluation-group.open .evaluation-row .evaluation-detail {
+        display: none;
+      }
+      .evaluation-description label {
+        cursor:pointer;
+      }
+      .acquisition-row { 
+        display:none;
+      }
+      .evaluation-group.open .acquisition-row {
+        display:table-row;
+      }
+      input[type="checkbox"] {
+        display:none;
+      }
+      .acquisition-row td {
+        padding: 0px 10px 5px 0px;
+      }
+      .acquisition-item {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: 3px 0;
+      }
+      .acquisition-description {
+        min-width: 0;
+        padding-right: 10px;
+      }
+      .acquisition-label {
+        display: block;
+        font-weight: 500;
+      }
+      .acquisition-detail {
+        display: block;
+        font-size: 0.85em;
+        color: gray;
+        margin-top: 2px;
+      }
+      .acquisition-item .acquisition-icon {
+        flex-shrink: 0;
+        margin-left: 8px;
+      }
       .acquisition-row td:nth-child(2) {
         text-align: left;
       }
@@ -987,7 +1010,7 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       ${this.buildSwitchField("Display comment","display_comment",this._config.display_comment)}
       ${this.buildNumberField("Max evaluations","max_evaluations",this._config.max_evaluations)}
     `}};customElements.define("ecole_directe-evaluations-card-editor",ce);var nt=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),Ne=nt.prototype.html,he=class extends f{render(){return!this.hass||!this._config?Ne``:Ne`
-      ${this.buildEntityPickerField("Cpateur moyennes","entity",this._config.entity,"moyenne_generale")}
+      ${this.buildEntityPickerField("Capteur moyennes","entity",this._config.entity,"moyenne_generale")}
       ${this.buildSwitchField("Display header","display_header",this._config.display_header)}
       ${this.buildSwitchField("Display class average","display_class_average",this._config.display_class_average)}
       ${this.buildSwitchField("Compare with class average","compare_with_class_average",this._config.compare_with_class_average)}
