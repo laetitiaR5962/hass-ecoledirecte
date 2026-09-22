@@ -14,8 +14,8 @@ if TYPE_CHECKING:
 
 ENTITY_DESCRIPTIONS = (
     SensorEntityDescription(
-        key="moyennes_periode",
-        translation_key="moyennes_periode",
+        key="periodes_moyennes",
+        translation_key="periodes_moyennes",
         icon="mdi:calendar-range",
         has_entity_name=True,
     ),
@@ -35,17 +35,17 @@ class EDMoyennesPeriodeSensor(EDGenericSensor):
         super().__init__(
             coordinator,
             entity_description,
-            f"{eleve.get_fullname_lower()}_moyennes_periode",
+            f"{eleve.get_fullname_lower()}_periodes_moyennes",
             "Moyennes par période",
             eleve,
         )
         periodes = self.coordinator.data.get(self._key, [])
-        # État principal : nombre de périodes récupérées
+        # État principal : nombre de périodes récupérées (ex: 3 pour 3 trimestres)
         self._state = len(periodes) if periodes else 0
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
-        """Renvoie les attributs avec toutes les périodes."""
+        """Renvoie les attributs avec la liste des périodes."""
         result = super().extra_state_attributes
         periodes = self.coordinator.data.get(self._key, [])
 
