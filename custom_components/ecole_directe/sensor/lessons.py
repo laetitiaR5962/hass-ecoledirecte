@@ -5,11 +5,12 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
-from custom_components.ecole_directe.const import DEFAULT_LUNCH_BREAK_TIME, LOGGER
-from custom_components.ecole_directe.sensor.generic import EDGenericSensor, is_too_big
 from homeassistant.components.sensor import (
     SensorEntityDescription,
 )
+
+from custom_components.ecole_directe.const import DEFAULT_LUNCH_BREAK_TIME, LOGGER
+from custom_components.ecole_directe.sensor.generic import EDGenericSensor, is_too_big
 
 if TYPE_CHECKING:
     from custom_components.ecole_directe.api.client import EDEleve
