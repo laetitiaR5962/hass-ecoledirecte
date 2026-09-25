@@ -42,9 +42,13 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
           <span style="background-color:${t.background_color}"></span>
         </td>
         <td>
-          <span class="lesson-name">${t.lesson}</span>
+          <span class="lesson-name">
+            ${t.lesson}
+            ${t.remplace?g`<span class="lesson-replaced">(remplace ${t.remplace})</span>`:""}
+            ${t.is_modifie?g`<span class="lesson-modified-dot"></span>`:""}
+          </span>
           ${this.config.display_classroom?g`<span class="lesson-classroom">
-                ${t.salle?"Salle "+t.salle:""}
+                ${t.salle?t.salle:""}
                 ${t.salle&&this.config.display_teacher?", ":""}
               </span>`:""}
           ${this.config.display_teacher?g`<span class="lesson-teacher"> ${t.prof} </span>`:""}
@@ -166,16 +170,21 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
         background-color: rgb(250, 50, 75);
       }
       .lesson-modified span.lesson-name {
- 	font-style: italic;
+        font-style: italic;
       }
       .lesson-modified-dot {
-	display: inline-block;
-	width: 6px;
-	height: 6px;
-	border-radius: 50%;
-	background-color: orange;
-	margin-left: 6px;
-	vertical-align: middle;
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: orange;
+        margin-left: 6px;
+        vertical-align: middle;
+      }
+      .lesson-replaced {
+        font-size: 0.85em;
+        font-style: italic;
+        opacity: 0.7;
       }
       .lesson-ended {
         opacity: 0.3;
@@ -465,6 +474,9 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       .grade-class-average {
         display: block;
       }
+      .non-significatif {
+        font-style: italic;
+      }
       .grade-class-average,
       .grade-class-min,
       .grade-class-max {
@@ -486,7 +498,7 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
           >
         </td>
       </tr>
-    `}getAverageRow(e){let t=parseFloat(e.moyenne.replace(",",".")),i=[];if(this.config.compare_with_ratio!==null){let a=parseFloat(this.config.compare_with_ratio);i.push(t>=a?"above-ratio":"below-ratio")}else if(this.config.compare_with_class_average&&e.moyenneClasse){let a=parseFloat(e.moyenneClasse.replace(",","."));i.push(t>a?"above-average":"below-average")}return $`
+    `}getAverageRow(e){let t=parseFloat(e.moyenne.replace(",",".")),i=[];if(this.config.compare_with_ratio!==null){let a=parseFloat(this.config.compare_with_ratio);i.push(t>=a?"above-ratio":"below-ratio")}else if(this.config.compare_with_class_average&&e.moyenneClasse){let a=parseFloat(e.moyenneClasse.replace(",","."));i.push(t>a?"above-average":t<a?"below-average":"above-average")}return $`
       <tr class="${i.join(" ")}">
         <td class="average-color">
           <span style="background-color:Grey"></span>
@@ -1023,7 +1035,7 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       ${this.buildSwitchField("Display comment","display_comment",this._config.display_comment)}
       ${this.buildNumberField("Max evaluations","max_evaluations",this._config.max_evaluations)}
     `}};customElements.define("ecole_directe-evaluations-card-editor",ce);var nt=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),Ne=nt.prototype.html,he=class extends f{render(){return!this.hass||!this._config?Ne``:Ne`
-      ${this.buildEntityPickerField("Cpateur moyennes","entity",this._config.entity,"moyenne_generale")}
+      ${this.buildEntityPickerField("Capteur moyennes","entity",this._config.entity,"moyenne_generale")}
       ${this.buildSwitchField("Display header","display_header",this._config.display_header)}
       ${this.buildSwitchField("Display class average","display_class_average",this._config.display_class_average)}
       ${this.buildSwitchField("Compare with class average","compare_with_class_average",this._config.compare_with_class_average)}

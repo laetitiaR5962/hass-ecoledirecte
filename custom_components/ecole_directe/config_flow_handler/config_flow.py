@@ -86,7 +86,15 @@ class EDConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     password=user_input[CONF_PASSWORD],
                 )
 
+                await self.async_set_unique_id(slugify(user_input[CONF_USERNAME]))
+                self._abort_if_unique_id_configured()
+
+                return self.async_create_entry(
+                    title=user_input[CONF_USERNAME],
+                    data=user_input,
+                )
             except Exception as exception:
+                LOGGER.exception("CRASH DU CONFIG FLOW :")
                 errors["base"] = self._map_exception_to_error(exception)
             else:
                 # Set unique ID based on username
@@ -223,20 +231,9 @@ class EDConfigFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     def _map_exception_to_error(self, exception: Exception) -> str:
-        """
-        Map API exceptions to user-facing error keys.
-
-        Args:
-            exception: The exception that was raised.
-
-        Returns:
-            The error key for display in the config flow form.
-
-        """
-        LOGGER.warning("Error in config flow: %s", exception)
+        LOGGER.warning("Error in config flow detail:")
         exception_name = type(exception).__name__
         return ERROR_MAP.get(exception_name, "unknown")
-
 
 class InvalidAuthError(HomeAssistantError):
     """Error to indicate there is invalid auth."""

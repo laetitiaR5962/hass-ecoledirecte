@@ -10,6 +10,7 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
 )
 
+from custom_components.ecole_directe.api.client import LEVEL_MAPPING
 from custom_components.ecole_directe.sensor.generic import EDGenericSensor
 
 if TYPE_CHECKING:

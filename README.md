@@ -9,6 +9,8 @@
 
 [![BuyMeCoffee][buymecoffeebadge]](https://www.buymeacoffee.com/giga77)
 
+## MODIFIÉ PAR LARUFF5862
+
 - [Installation](#Installation)
   - [Installation via l'interface utilisateur via HACS](#installation-via-linterface-utilisateur-via-hacs)
   - [Installation manuelle](<#installation-manuelle>)
@@ -183,14 +185,14 @@ Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de
 
 ---
 
-[commits-shield]: https://img.shields.io/github/commit-activity/y/hacf-fr/hass-ecoledirecte.svg?style=for-the-badge
-[commits]: https://github.com/hacf-fr/hass-ecoledirecte/commits/main
+[commits-shield]: https://img.shields.io/github/commit-activity/y/laetitiaR5962/hass-ecoledirecte.svg?style=for-the-badge
+[commits]: https://github.com/laetitiaR5962/hass-ecoledirecte/commits/main
 [hacs]: https://github.com/hacs/integration
 [hacsbadge]: https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge
-[license-shield]: https://img.shields.io/github/license/hacf-fr/hass-ecoledirecte.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/laetitiaR5962/hass-ecoledirecte.svg?style=for-the-badge
 [maintenance-shield]: https://img.shields.io/badge/maintainer-%40Giga77-blue.svg?style=for-the-badge
-[releases-shield]: https://img.shields.io/github/release/hacf-fr/hass-ecoledirecte.svg?style=for-the-badge
-[releases]: https://github.com/hacf-fr/hass-ecoledirecte/releases
+[releases-shield]: https://img.shields.io/github/release/laetitiaR5962/hass-ecoledirecte.svg?style=for-the-badge
+[releases]: https://github.com/laetitiaR5962/hass-ecoledirecte/releases
 [user_profile]: https://github.com/Giga77
 
 [buymecoffeebadge]: https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?style=for-the-badge
