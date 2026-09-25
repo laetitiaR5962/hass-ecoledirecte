@@ -623,6 +623,12 @@ class EDDataUpdateCoordinator(TimestampDataUpdateCoordinator):
                                 "new_evaluation",
                                 eleve,
                             )
+
+                            # --- AJOUT POUR LES MOYENNES PAR PÉRIODE ---
+                            if "periodes_moyennes" in grades_evaluations:
+                                self.data[
+                                    f"{eleve.get_fullname_lower()}_periodes_moyennes"
+                                ] = grades_evaluations["periodes_moyennes"]
                         except Exception:
                             LOGGER.exception("Error getting grades from ecole directe")
 
@@ -642,6 +648,7 @@ class EDDataUpdateCoordinator(TimestampDataUpdateCoordinator):
                                 current_week_plus_21.strftime("%Y-%m-%d"),
                                 lunch_break_time,
                             )
+
                             self.data[
                                 f"{eleve.get_fullname_lower()}_timetable_today"
                             ] = list(
