@@ -2,16 +2,15 @@
 
 from __future__ import annotations
 
-from ..api.client import LEVEL_MAPPING
-
 from typing import TYPE_CHECKING, Any
 
 from homeassistant.components.sensor import (
     SensorEntityDescription,
 )
 
-from custom_components.ecole_directe.api.client import LEVEL_MAPPING
 from custom_components.ecole_directe.sensor.generic import EDGenericSensor
+
+from ..api.client import LEVEL_MAPPING
 
 if TYPE_CHECKING:
     from custom_components.ecole_directe.api.client import EDEleve

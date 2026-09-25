@@ -466,10 +466,6 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       .grade-value {
         font-weight: bold;
       }
-
-      .non-significatif {
-        font-style: italic;
-      }
       .grade-value,
       .grade-class-average {
         display: block;
@@ -807,9 +803,6 @@ var V=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=V.prototy
       }
       .acquisition-icon-1 {
         background-color: #f80a0a;
-      }
-      .acquisition-row {
-        display: none;
       }
       input[type="checkbox"] {
         display: none;
