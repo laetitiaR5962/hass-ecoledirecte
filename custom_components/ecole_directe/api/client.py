@@ -396,12 +396,49 @@ class EDApiClient:
         response["moyenne_generale"] = {}
         response["evaluations"] = []
         response["disciplines"] = []
+        response["periodes_moyennes"] = []
         data = json_resp["data"]
         index1 = 0
         index2 = 0
         if "periodes" in data:
-            data["periodes"].sort(key=operator.itemgetter("dateDebut"))
-            for periode_json in data["periodes"]:
+            # 1. Extraction globale de toutes les périodes pour la nouvelle clé
+            periodes_sorted = sorted(
+                data["periodes"], key=operator.itemgetter("dateDebut")
+            )
+            for periode_json in periodes_sorted:
+                periode_info = {
+                    "idPeriode": periode_json.get("idPeriode"),
+                    "codePeriode": periode_json.get("codePeriode"),
+                    "nomPeriode": periode_json.get("periode"),
+                    "annuel": periode_json.get("annuel", False),
+                    "examenBlanc": periode_json.get("examenBlanc", False),
+                    "cloture": periode_json.get("cloture", False),
+                    "dateDebut": periode_json.get("dateDebut"),
+                    "dateFin": periode_json.get("dateFin"),
+                    "moyenne_generale": {},
+                    "disciplines": [],
+                }
+                ensemble = periode_json.get("ensembleMatieres", {})
+                if ensemble:
+                    periode_info["moyenne_generale"] = {
+                        "moyenneGenerale": (
+                            ensemble.get("moyenneGenerale") or ""
+                        ).replace(",", "."),
+                        "moyenneClasse": (ensemble.get("moyenneClasse") or "").replace(
+                            ",", "."
+                        ),
+                        "moyenneMin": (ensemble.get("moyenneMin") or "").replace(
+                            ",", "."
+                        ),
+                        "moyenneMax": (ensemble.get("moyenneMax") or "").replace(
+                            ",", "."
+                        ),
+                        "dateCalcul": ensemble.get("dateCalcul", ""),
+                    }
+                response["periodes_moyennes"].append(periode_info)
+
+            # 2. Conservation de la logique pour la période courante (disciplines & moyenne générale)
+            for periode_json in periodes_sorted:
                 if periode_json["annuel"] is True:
                     continue
                 if datetime.now() < datetime.strptime(
@@ -814,6 +851,7 @@ def get_disciplines_periode(data: Any) -> list:
         raise
     return disciplines
 
+
 LEVEL_MAPPING: dict[str, str] = {
     "1": "Non atteint",
     "2": "Partiellement atteint",
@@ -821,11 +859,13 @@ LEVEL_MAPPING: dict[str, str] = {
     "4": "Dépassé",
 }
 
+
 def get_level(valeur: str | None) -> str:
     """Retourne le niveau sous forme de texte selon la valeur."""
     if valeur is None:
         return "Inconnu"
     return LEVEL_MAPPING.get(str(valeur), "Inconnu")
+
 
 def get_evaluation(data: Any, fallback_matiere: str | None = None) -> dict:
     """Get evaluation information."""
