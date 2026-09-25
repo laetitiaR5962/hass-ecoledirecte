@@ -492,7 +492,7 @@ var U=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=U.prototy
           >
         </td>
       </tr>
-    `}getAverageRow(e){let t=parseFloat(e.moyenne.replace(",",".")),i=[];if(this.config.compare_with_ratio!==null){let a=parseFloat(this.config.compare_with_ratio);i.push(t>=a?"above-ratio":"below-ratio")}else if(this.config.compare_with_class_average&&e.moyenneClasse){let a=parseFloat(e.moyenneClasse.replace(",","."));i.push(t>a?"above-average":"below-average")}return w`
+    `}getAverageRow(e){let t=parseFloat(e.moyenne.replace(",",".")),i=[];if(this.config.compare_with_ratio!==null){let a=parseFloat(this.config.compare_with_ratio);i.push(t>=a?"above-ratio":"below-ratio")}else if(this.config.compare_with_class_average&&e.moyenneClasse){let a=parseFloat(e.moyenneClasse.replace(",","."));i.push(t>=a?"above-average":"below-average")}return w`
       <tr class="${i.join(" ")}">
         <td class="average-color">
           <span style="background-color:Grey"></span>
