@@ -1,15 +1,15 @@
 var U=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=U.prototype.html,ze=U.prototype.css,I=class extends U{static get properties(){return{config:{},hass:{},header_title:{type:String},no_data_message:{type:String}}}getCardHeader(){let e=this.hass.states[this.config.entity].attributes;if(e){let t=typeof e.prenom=="string"&&e.prenom.length>0?e.prenom:e.nom_complet;return D`<div class="ed-card-header">
         ${this.header_title} ${t}
-      </div>`}return D`<div class="ed-card-no-data">
+      </div>`}return k`<div class="ed-card-no-data">
       Veuillez choisir une autre entité
-    </div>`}noDataMessage(){return D`<div class="ed-card-no-data">${this.no_data_message}</div>`}render(){return!this.config||!this.hass?D`<div class="ed-card-no-data">
+    </div>`}noDataMessage(){return k`<div class="ed-card-no-data">${this.no_data_message}</div>`}render(){return!this.config||!this.hass?k`<div class="ed-card-no-data">
         Veuillez configurer la carte
-      </div>`:this.hass.states[this.config.entity]?(this.initCard(),D` <ha-card id="${this.config.entity}-card">
+      </div>`:this.hass.states[this.config.entity]?(this.initCard(),k` <ha-card id="${this.config.entity}-card">
         ${this.config.display_header?this.getCardHeader():""}
         ${this.getCardContent()}
-      </ha-card>`):D`<div class="ed-card-no-data">
+      </ha-card>`):k`<div class="ed-card-no-data">
       Veuillez choisir une autre entité
-    </div>`}setConfig(e){if(!e.entity)throw new Error("Vous devez d\xE9finir une entit\xE9");this.config={...this.getDefaultConfig(),...e}}getItems(){let e=[],t=this.hass.states[this.config.entity];return t&&t.attributes[this.items_attribute_key]&&e.push(...t.attributes[this.items_attribute_key]),e}static get styles(){return ze`
+    </div>`}setConfig(e){if(!e.entity)throw new Error("Vous devez d\xE9finir une entit\xE9");this.config={...this.getDefaultConfig(),...e}}getItems(){let e=[],t=this.hass.states[this.config.entity];return t&&t.attributes[this.items_attribute_key]&&e.push(...t.attributes[this.items_attribute_key]),e}static get styles(){return Ue`
       .ed-card-header {
         text-align: center;
       }
@@ -32,7 +32,7 @@ var U=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=U.prototy
       </td>
     </tr>`}getTimetableRow(t){let i=new Date().getTime(),a=Date.parse(t.start_at),s=Date.parse(t.end_at),n=g``;this.config.display_lunch_break&&t.is_afternoon&&!this.lunchBreakRendered&&(n=this.getBreakRow("Repas",this.config.dim_ended_lessons&&a<i),this.lunchBreakRendered=!0);let r=g`
       <tr
-        class="${t.is_annule?"lesson-canceled":t.is_modifie?"lesson-modified":""} ${this.config.dim_ended_lessons&&s<i?"lesson-ended":""}"
+        class="${t.is_annule?"lesson-canceled":""} ${this.config.dim_ended_lessons&&s<i?"lesson-ended":""}"
       >
         <td>
           ${t.start_time}<br />
@@ -59,7 +59,7 @@ var U=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=U.prototy
     `;return g`${n}${r}`}getFormattedDate(t){return new Date(t.start_at).toLocaleDateString("fr-FR",{weekday:"long",day:"2-digit",month:"2-digit"}).replace(/^(.)/,i=>i.toUpperCase())}getFormattedTime(t){return new Intl.DateTimeFormat("fr-FR",{hour:"numeric",minute:"numeric"}).format(new Date(t))}getDayHeader(t,i,a,s){return g`<div class="ed-timetable-header">
       ${this.config.enable_slider?g`<span
             class="ed-timetable-header-arrow-left ${s===0?"disabled":""}"
-            @click=${n=>this.changeDay("previous",n)}
+            @click=${r=>this.changeDay("previous",r)}
             >←</span
           >`:""}
       <span class="ed-timetable-header-date"
@@ -71,7 +71,7 @@ var U=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=U.prototy
           </span>`:""}
       ${this.config.enable_slider?g`<span
             class="ed-timetable-header-arrow-right"
-            @click=${n=>this.changeDay("next",n)}
+            @click=${r=>this.changeDay("next",r)}
             >→</span
           >`:""}
     </div>`}changeDay(t,i){if(i.preventDefault(),i.target.classList.contains("disabled"))return;let a=i.target.parentElement.parentElement,s=a.previousElementSibling&&a.previousElementSibling.classList.contains("ed-timetable-day-wrapper"),n=a.nextElementSibling&&a.nextElementSibling.classList.contains("ed-timetable-day-wrapper"),r=null;t==="previous"&&s?r=a.previousElementSibling:t==="next"&&n&&(r=a.nextElementSibling),r&&(a.classList.remove("active"),r.classList.add("active"),s=r.previousElementSibling&&r.previousElementSibling.classList.contains("ed-timetable-day-wrapper"),n=r.nextElementSibling&&r.nextElementSibling.classList.contains("ed-timetable-day-wrapper"),s||r.querySelector(".ed-timetable-header-arrow-left").classList.add("disabled"),n||r.querySelector(".ed-timetable-header-arrow-right").classList.add("disabled"))}render(){if(!this.config||!this.hass)return g`<div class="ed-card-no-data">
@@ -212,7 +212,7 @@ var U=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=U.prototy
       <tr class="${t.effectue?"devoir-done":""}">
         <td class="devoir-detail">
           <label for="devoir-${i}">
-            <span class="devoir-subject">${t.matiere}</span>
+            <span class="devoir-subject">${t.matiere||""}</span>
             ${t.interrogation?m`<span class="devoir-controle">(Contrôle)</span>`:m``}
           </label>
           <input type="checkbox" id="devoir-${i}" />
@@ -459,7 +459,6 @@ var U=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=U.prototy
       }
       .grade-detail {
         text-align: right;
-        width: 40%;
       }
       .grade-value {
         font-weight: bold;
@@ -685,12 +684,12 @@ var U=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=U.prototy
       }
       td.evaluation-color {
         width: 4px;
-        padding-top: 8px;
+        padding-top: 11px;
       }
       td.evaluation-color > span {
         display: inline-block;
         width: 4px;
-        height: 4rem;
+        height: 2rem;
         border-radius: 4px;
         background-color: grey;
       }
@@ -708,7 +707,6 @@ var U=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=U.prototy
       }
       .evaluation-description {
         display: block;
-        padding-left: 0px;
       }
       .evaluation-teacher {
         display: block;
@@ -729,36 +727,6 @@ var U=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=U.prototy
       }
       .evaluation-value {
         font-weight: bold;
-      }
-      .evaluation-legend {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 4px 6px;
-        align-items: center;
-        padding: 8px 12px;
-        margin-bottom: 8px;
-        border-bottom: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
-        font-size: 0.85em;
-        font-weight: normal;
-        color: var(--secondary-text-color, gray);
-      }
-      .evaluation-legend div, .legend-item {
-        padding: 0;
-        font-weight: normal;
-        font-size: inherit;
-      }
-      .legend-item {
-        padding-right: 5px;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px; /* espace propre entre la bulle et le texte */
-      }
-      .acquisition-status {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 5px 0px 0px 0px;
-        white-space: nowrap;
       }
       .acquisition-icon {
         display: inline-block;
@@ -788,50 +756,16 @@ var U=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=U.prototy
       input[type="checkbox"] {
         display: none;
       }
-      .evaluation-group.open .evaluation-row .evaluation-detail {
-        display: none;
-      }
-      .evaluation-description label {
-        cursor:pointer;
-      }
-      .acquisition-row {
-        display:none;
-      }
-      .evaluation-group.open .acquisition-row {
-        display:table-row;
-      }
-      input[type="checkbox"] {
-        display:none;
-      }
-      .acquisition-row td {
-        padding: 0px 10px 5px 0px;
-      }
-      .acquisition-item {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        padding: 3px 0;
-      }
-      .acquisition-description {
-        min-width: 0;
-        padding-right: 10px;
-      }
-      .acquisition-label {
-        display: block;
-        font-weight: 500;
-      }
-      .acquisition-detail {
-        display: block;
-        font-size: 0.85em;
-        color: gray;
-        margin-top: 2px;
-      }
-      .acquisition-item .acquisition-icon {
-        flex-shrink: 0;
-        margin-left: 8px;
-      }
+      /** FIXME
+        .evaluation-row:has(input:checked) .acquisition-icon {
+            display:none;
+        }
+        .evaluation-row:has(input:checked) + .acquisition-row {
+            display: table-row;
+        }
+        */
       .acquisition-row td:nth-child(2) {
-        text-align: left;
+        text-align: right;
       }
     `}static getStubConfig(){return{display_header:!0,display_description:!0,display_teacher:!0,display_date:!0,display_comment:!0,max_evaluations:null,mapping_evaluations:{}}}static getConfigElement(){return document.createElement("ecole_directe-evaluations-card-editor")}};customElements.define("ecole_directe-evaluations-card",ae);window.customCards=window.customCards||[];window.customCards.push({type:"ecole_directe-evaluations-card",name:"Carte des \xE9valuations pour Ecole Directe",description:"Affiche les \xE9valuations pour Ecole Directe",documentationURL:"https://github.com/hacf-fr/EcoleDirecteHACards?tab=readme-ov-file#evaluations"});var Te=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),M=Te.prototype.html,Xe=Te.prototype.css,se=class extends _{getAbsencesRetardsRow(e){let t=M`
       <tr>
@@ -915,7 +849,7 @@ var U=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=U.prototy
         @change=${this._valueChanged}
         @closed=${r=>r.stopPropagation()}
       >
-        ${n}
+        ${r}
       </ha-select>
     `}buildSwitchField(e,t,i,a){return typeof i!="boolean"&&(i=a),R`
       <ha-formfield class="switch-wrapper" .label="${e}">
@@ -952,7 +886,7 @@ var U=Object.getPrototypeOf(customElements.get("ha-panel-lovelace")),D=U.prototy
         .value=${i||""}
         .configValue=${t}
         .includeDomains="sensor"
-        .entityFilter="${n=>s.test(n.entity_id)}"
+        .entityFilter="${r=>s.test(r.entity_id)}"
         @value-changed=${this._valueChanged}
         allow-custom-entity
       ></ha-entity-picker>
