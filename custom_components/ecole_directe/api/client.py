@@ -740,6 +740,10 @@ async def load_json_file(file_path: str) -> dict:
 
 async def save_json_file(json_content: Any, file_path: str) -> None:
     """Save JSON file."""
+    LOGGER.debug(
+        "ECRITURE DU FICHIER JSON : %s",
+        file_path,
+    )
     async with await anyio.open_file(file_path, "w", encoding="utf-8") as f:
         await f.write(json.dumps(json_content, indent=4, ensure_ascii=False))
 
