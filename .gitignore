@@ -244,4 +244,5 @@ $RECYCLE.BIN/
 
 # misc
 *.bat
+custom_components/ecole_directe/frontend/EcoleDirecteHACards.js
 .vscode/settings.json

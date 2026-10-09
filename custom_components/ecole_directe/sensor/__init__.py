@@ -319,7 +319,6 @@ async def async_setup_entry(
                             )
                             for entity_description in MOYENNEGENERALE_DESCRIPTIONS
                         )
-                    # --- AJOUT POUR LE CAPTEUR DES MOYENNES PAR PÉRIODE ---
                     if (
                         f"{eleve.get_fullname_lower()}_periodes_moyennes"
                         in coordinator.data
